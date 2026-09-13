@@ -1,4 +1,2 @@
-# Road Runner Quickstart
-
-Check out the [docs](https://rr.brott.dev/docs/v1-0/tuning/).
-
+# Clauge Robotics
+Clauge Robotics (to be decided between the two teams)'s bot's source code.

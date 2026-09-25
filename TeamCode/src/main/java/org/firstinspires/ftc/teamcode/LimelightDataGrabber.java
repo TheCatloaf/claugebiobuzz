@@ -1,11 +1,11 @@
-/*package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@TeleOp(name = "Limelight Test", group = "Sensor")
+@Autonomous(name = "Limelight Test")
 public class LimelightDataGrabber extends LinearOpMode {
     @Override
     public void runOpMode() {
@@ -17,7 +17,7 @@ public class LimelightDataGrabber extends LinearOpMode {
         telemetry.setMsTransmissionInterval(11);
 
         // 3. Select your tuned pipeline (e.g., 0 for Color, 1 for AprilTags)
-        limelight.pipelineSwitch(0);
+        limelight.pipelineSwitch(3);
 
         telemetry.addData("Status", "Limelight Initialized. Ready to start.");
         telemetry.update();
@@ -33,10 +33,11 @@ public class LimelightDataGrabber extends LinearOpMode {
 
             if (result != null && result.isValid()) {
                 // Access core targeting metrics
+
                 double tx = result.getTx();       // Horizontal offset from crosshair (-30 to 30 degrees)
                 double ty = result.getTy();       // Vertical offset from crosshair (-25 to 25 degrees)
                 double ta = result.getTa();       // Target area as a % of the total image size
-                String targetId = String.valueOf(result.getClassifierClass()); // Neural network / classification info (if used)
+                // String targetId = String.valueOf(result.getClassifierClass()); // Neural network / classification info (if used)
 
                 // 6. Push data to the Driver Station
                 telemetry.addData("Target Detected", "YES");
@@ -45,9 +46,9 @@ public class LimelightDataGrabber extends LinearOpMode {
                 telemetry.addData("Target Area (ta)", "%.2f%%", ta);
                 
                 // If using an AprilTag pipeline, you can also query individual tag data:
-                if (!result.getAprilTagResults().isEmpty()) {
-                    telemetry.addData("Primary AprilTag ID", result.getAprilTagResults().get(0).getId());
-                }
+                //if (!result.getAprilTagResults().isEmpty()) {
+                    // telemetry.addData("Primary AprilTag ID", result.getAprilTagResults().get(0).getId());
+                //}
 
             } else {
                 telemetry.addData("Target Detected", "NO (Searching...)");
@@ -57,4 +58,3 @@ public class LimelightDataGrabber extends LinearOpMode {
         }
     }
 }
-*/

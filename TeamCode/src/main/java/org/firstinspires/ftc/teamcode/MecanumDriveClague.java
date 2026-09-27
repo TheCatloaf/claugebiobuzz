@@ -17,10 +17,15 @@ public class MecanumDriveClague extends LinearOpMode {
     volatile static double TURN_SLOW_SPEED = 0.5;
     volatile static double MOVE_SPRINT_SPEED = 1;
     volatile static double MOVE_SLOW_SPEED = 0.6;
-
-    final double THROW_MOTOR_SPEED = (double) 2/ (double) 3;
+    final static double THROW_MOTOR_SPEED_IDLE = 0.4;
+    final static double THROW_MOTOR_SPEED_LAUNCH = 0.8;
+    final static long THROW_MOTOR_WARMUP_TIME_MS = 100;
 
     private Robot robot;
+
+
+    private boolean isThrowing;
+    private long throwDate;
 
     @Override
     public void runOpMode() {
@@ -38,10 +43,7 @@ public class MecanumDriveClague extends LinearOpMode {
     }
 
     private void tick() {
-
-        boolean throwInput = gamepad1.y;
-
-        // Move that bot
+        // Moving
         double moveSpeed = gamepad1.a ? MOVE_SPRINT_SPEED : MOVE_SLOW_SPEED;
         double turnSpeed = gamepad1.a ? TURN_SPRINT_SPEED : TURN_SLOW_SPEED;
 
@@ -58,7 +60,6 @@ public class MecanumDriveClague extends LinearOpMode {
         robot.motorFL.setPower(powerFL);
         robot.motorBR.setPower(powerBR);
         robot.motorBL.setPower(powerBL);
-        robot.motorThrow.setPower(throwInput ? THROW_MOTOR_SPEED : 0);
 
         // Breaking
         if (gamepad1.b) {
@@ -76,5 +77,21 @@ public class MecanumDriveClague extends LinearOpMode {
             robot.motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             robot.motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
+
+        // Throwing
+        long now = System.nanoTime();
+        boolean throwInput = gamepad1.left_trigger > 0.5;
+        if (throwInput && !isThrowing) {
+            throwDate = now + THROW_MOTOR_WARMUP_TIME_MS * 1000;
+        } else if (isThrowing && throwInput && now >= throwDate) {
+            robot.servoThrowLeft.setPower(1);
+            robot.servoThrowRight.setPower(1);
+        } else {
+            robot.servoThrowLeft.setPower(0);
+            robot.servoThrowRight.setPower(0);
+        }
+        isThrowing = throwInput;
+
+        robot.motorThrow.setPower(isThrowing ? THROW_MOTOR_SPEED_LAUNCH : THROW_MOTOR_SPEED_IDLE);
     }
 }
